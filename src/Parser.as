@@ -5,5 +5,10 @@ package
 		public function Parser()
 		{
 		}
+		
+		public function parseXml():void
+		{
+			
+		}
 	}
 }
