@@ -14,6 +14,7 @@ package
 		{
 			_main = new Starling(Main, stage);
 			_main.start();
+			_main.showStats = true;
 		}
 	}
 }
