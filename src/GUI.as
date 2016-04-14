@@ -4,7 +4,7 @@ package
 	
 	import starling.core.Starling;
 	
-	[SWF(width="1280", height="720", frameRate="60", backgroundColor="#000000")]
+	[SWF(width="1280", height="720", frameRate="60", backgroundColor="#e6e6e6")] // Light gray
 	
 	public class GUI extends Sprite
 	{
