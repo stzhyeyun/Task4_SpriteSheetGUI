@@ -27,7 +27,7 @@ package
 		
 		public function Main()
 		{
-			setUI();
+			loadUIResource();
 						
 			NativeApplication.nativeApplication.addEventListener(Event.EXITING, onExit);
 		}
