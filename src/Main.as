@@ -119,6 +119,23 @@ package
 			changeMode(Mode.ANIMATION_MODE);
 		}
 		
+		private function showSpriteSheet(spriteSheet:Image):void
+		{
+			if (spriteSheet)
+			{
+				spriteSheet.visible = true;
+				addChild(spriteSheet);
+			}
+		}
+		
+		private function playSpriteSheet(sprites:Vector.<Image>):void
+		{
+			if (sprites && sprites.length > 0)
+			{
+				// timer
+			}
+		}
+		
 		private function onBrowserButtonClicked(event:TouchEvent):void
 		{			
 			var action:Touch = event.getTouch(_browserButton, TouchPhase.ENDED);
