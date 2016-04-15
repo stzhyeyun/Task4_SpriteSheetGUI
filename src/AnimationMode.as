@@ -47,19 +47,16 @@ package
 			if (_playButton)
 			{
 				_playButton.visible = false;
-				_playButton.touchable = false;
 			}
 			
 			if (_stopButton)
 			{
 				_stopButton.visible = false;
-				_stopButton.touchable = false;
 			}
 			
 			if (_releaseButton)
 			{
 				_releaseButton.visible = false;
-				_releaseButton.touchable = false;
 			}
 		}
 		

@@ -33,7 +33,6 @@ package
 			if (_spritesBox)
 			{
 				_spritesBox.visible = false;
-				_spritesBox.touchable = false;
 			}
 		}
 		
