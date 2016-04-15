@@ -16,9 +16,6 @@ package
 
 	public class InputManager
 	{
-		public static const UI_RESOURCE:String = "UI Resource";
-		public static const SPRITE_SHEET:String = "Sprite Sheet";
-		
 		private static var _instance:InputManager;
 		
 		private var _loader:Loader;
@@ -106,13 +103,13 @@ package
 			
 			switch (type)
 			{
-				case UI_RESOURCE:
+				case ResourceType.UI_ASSET:
 				{
 					_setUI = func;
 				} 
 					break;
 				
-				case SPRITE_SHEET:
+				case ResourceType.SPRITE_SHEET:
 				{
 					_showSpriteSheet = func;
 				} 
@@ -176,13 +173,13 @@ package
 			
 			switch (_queue[0].type)
 			{
-				case UI_RESOURCE:
+				case ResourceType.UI_ASSET:
 				{
 					_setUI();
 				} 
 					break;
 				
-				case SPRITE_SHEET:
+				case ResourceType.SPRITE_SHEET:
 				{
 					_showSpriteSheet(_spriteSheets[_spriteSheets.length - 1].spriteSheet);
 				} 
