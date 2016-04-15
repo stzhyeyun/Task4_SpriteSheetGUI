@@ -26,8 +26,8 @@ package
 		private var _setUI:Function;
 		private var _showSpriteSheet:Function;
 
-		private var _UIResources:Dictionary; // Texture
-		private var _spriteSheets:Dictionary; // SpriteSheet
+		private var _UIResources:Dictionary; // key : String, value : Texture
+		private var _spriteSheets:Dictionary; // key : String, value : SpriteSheet
 		
 		public function InputManager()
 		{
