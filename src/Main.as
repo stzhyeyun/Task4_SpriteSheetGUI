@@ -8,6 +8,7 @@ package
 	import starling.core.Starling;
 	import starling.display.Canvas;
 	import starling.display.DisplayObject;
+	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
@@ -46,6 +47,11 @@ package
 					Mode(_modes[Mode.IMAGE_MODE]).activate();
 				}
 			}
+		}
+		
+		private function loadUIResource():void
+		{
+			// to do
 		}
 		
 		private function setUI():void

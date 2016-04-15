@@ -1,11 +1,14 @@
 package 
 {
+	import flash.display.BitmapData;
+
 	public class LoadInfo
 	{
 		private var _type:String;
 		private var _path:String;
 		private var _name:String;
-		
+		private var _spriteSheetBitmapData:BitmapData;
+				
 		public function LoadInfo(type:String, path:String, name:String)
 		{
 			_type = type;
@@ -26,6 +29,16 @@ package
 		public function get name():String
 		{
 			return _name;
+		}
+		
+		public function get spriteSheetBitmapData():BitmapData
+		{
+			return _spriteSheetBitmapData;
+		}
+		
+		public function set spriteSheetBitmapData(bitmapData:BitmapData):void
+		{
+			_spriteSheetBitmapData = spriteSheetBitmapData;
 		}
 		
 		public function dispose():void
