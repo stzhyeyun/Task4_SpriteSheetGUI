@@ -72,16 +72,26 @@ package
 		
 		public function getTexture(name:String):Texture
 		{
-			// to do
-			
-			return null;
+			if (_UIResources && _UIResources[name])
+			{
+				return Texture(_UIResources[name]);
+			}
+			else
+			{
+				return null;
+			}
 		}
 		
 		public function getSpriteSheet(name:String):SpriteSheet
 		{
-			// to do
-			
-			return null;
+			if (_spriteSheets && _spriteSheets[name])
+			{
+				return SpriteSheet(_spriteSheets[name]);
+			}
+			else
+			{
+				return null;
+			}
 		}
 		
 		public function loadRequest(type:String, path:File, name:String, func:Function, startLoad:Boolean):void
