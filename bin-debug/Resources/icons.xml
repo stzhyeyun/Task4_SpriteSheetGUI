@@ -1,0 +1,13 @@
+<SpriteSheet name="icons.png" width="512" height="512">
+  <Sprite name="previous" x="0" y="0" width="128" height="128" rotated="false"/>
+  <Sprite name="dropdown" x="0" y="128" width="128" height="128" rotated="false"/>
+  <Sprite name="folder" x="0" y="256" width="128" height="128" rotated="false"/>
+  <Sprite name="next" x="0" y="384" width="128" height="128" rotated="false"/>
+  <Sprite name="play" x="128" y="384" width="128" height="128" rotated="false"/>
+  <Sprite name="add" x="256" y="384" width="128" height="128" rotated="false"/>
+  <Sprite name="remove" x="384" y="384" width="128" height="128" rotated="false"/>
+  <Sprite name="save" x="128" y="256" width="128" height="128" rotated="false"/>
+  <Sprite name="scrollDown" x="256" y="256" width="128" height="128" rotated="false"/>
+  <Sprite name="scrollUp" x="384" y="256" width="128" height="128" rotated="false"/>
+  <Sprite name="stop" x="128" y="128" width="128" height="128" rotated="false"/>
+</SpriteSheet>
