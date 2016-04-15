@@ -51,7 +51,10 @@ package
 		
 		private function loadUIResource():void
 		{
-			// to do
+			InputManager.getInstance().loadRequest(
+				ResourceType.UI_ASSET,
+				File.applicationDirectory.resolvePath("Resources"), "icons",
+				setUI, true);
 		}
 		
 		private function setUI():void
