@@ -125,6 +125,16 @@ package
 			super.dispose();
 		}
 		
+		public function get text():String
+		{
+			return _textField.text;
+		}
+		
+		public function set text(text:String):void
+		{
+			_textField.text = text;
+		}
+		
 		private function onMouseDown(event:TouchEvent):void
 		{			
 			var action:Touch = event.getTouch(this);
