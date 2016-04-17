@@ -14,7 +14,8 @@ package
 		}
 		
 		public function setUI(
-			UIAssetX:Number, viewAreaY:Number, viewAreaBottom:Number):Vector.<DisplayObject>
+			viewAreaX:Number, viewAreaY:Number, viewAreaWidth:Number, viewAreaHeight:Number,
+			UIAssetX:Number):Vector.<DisplayObject>
 		{
 			// to do
 			// invisible
