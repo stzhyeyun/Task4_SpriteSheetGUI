@@ -145,12 +145,15 @@ package
 			
 			if (action)
 			{
-				if (!_resourceFolder)
+				if (_browserButton.isIn(action.getLocation(this)))
 				{
-					_resourceFolder = new File();
+					if (!_resourceFolder)
+					{
+						_resourceFolder = new File();
+					}
+					_resourceFolder.addEventListener(Event.SELECT, onResourceFolderSelected);
+					_resourceFolder.browseForDirectory("Select Resource Folder");
 				}
-				_resourceFolder.addEventListener(Event.SELECT, onResourceFolderSelected);
-				_resourceFolder.browseForDirectory("Select Resource Folder");
 			}
 		}
 		
