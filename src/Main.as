@@ -91,15 +91,17 @@ package
 			// _spriteSheetBox
 			
 			
-			setMode();			
+			setMode(UIAssetX, viewAreaY, viewAreaBottom);			
 		}
 		
-		private function setMode():void
+		private function setMode(
+			UIAssetX:Number, viewAreaY:Number, viewAreaBottom:Number):void
 		{
 			_modes = new Dictionary();
 			
 			_modes[Mode.ANIMATION_MODE] = new AnimationMode(Mode.ANIMATION_MODE);
-			var animModeUI:Vector.<DisplayObject> = Mode(_modes[Mode.ANIMATION_MODE]).setUI();
+			var animModeUI:Vector.<DisplayObject> =
+				_modes[Mode.ANIMATION_MODE].setUI(UIAssetX, viewAreaY, viewAreaBottom);
 			
 			if (animModeUI)
 			{
@@ -109,8 +111,9 @@ package
 				}
 			}
 			
-			var imgModeUI:Vector.<DisplayObject> = Mode(_modes[Mode.IMAGE_MODE]).setUI();
 			_modes[Mode.IMAGE_MODE] = new ImageMode(Mode.IMAGE_MODE);
+			var imgModeUI:Vector.<DisplayObject> =
+				_modes[Mode.IMAGE_MODE].setUI(UIAssetX, viewAreaY, viewAreaBottom);
 			
 			if (imgModeUI)
 			{
