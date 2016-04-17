@@ -11,7 +11,8 @@ package
 			_id = id;
 		}
 		
-		public override function setUI():Vector.<DisplayObject>
+		public function setUI(
+			UIAssetX:Number, viewAreaY:Number, viewAreaBottom:Number):Vector.<DisplayObject>
 		{
 			// to do
 			// invisible
@@ -19,7 +20,7 @@ package
 			return null;
 		}
 		
-		public override function activate():void
+		public function activate():void
 		{
 			if (_spritesBox)
 			{
@@ -28,7 +29,7 @@ package
 			}
 		}
 		
-		public override function deactivate():void
+		public function deactivate():void
 		{
 			if (_spritesBox)
 			{
