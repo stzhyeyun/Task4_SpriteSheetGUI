@@ -13,6 +13,7 @@ package
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
+	import starling.utils.Align;
 	
 	public class Main extends Sprite
 	{
@@ -34,23 +35,7 @@ package
 						
 			NativeApplication.nativeApplication.addEventListener(Event.EXITING, onExit);
 		}
-		
-		public function changeMode(mode:String):void
-		{
-			if (_modes && _modes[Mode.ANIMATION_MODE] && _modes[Mode.IMAGE_MODE])
-			{
-				if (mode == Mode.ANIMATION_MODE)
-				{
-					_modes[Mode.IMAGE_MODE].deactivate();
-					_modes[Mode.ANIMATION_MODE].activate();
-				}
-				else if (mode == Mode.IMAGE_MODE)
-				{
-					_modes[Mode.ANIMATION_MODE].deactivate();
-					_modes[Mode.IMAGE_MODE].activate();
-				}
-			}
-		}
+
 		
 		private function setUI():void
 		{
@@ -62,15 +47,21 @@ package
 			var viewAreaBottom:Number = viewAreaY + viewAreaHeight;
 			
 			_viewArea = new Canvas();
+			_viewArea.x = viewAreaX;
+			_viewArea.y = viewAreaY;
+			_viewArea.width = viewAreaWidth;
+			_viewArea.height = viewAreaHeight;			
 			_viewArea.beginFill();
-			_viewArea.drawRectangle(viewAreaX, viewAreaY, viewAreaWidth, viewAreaHeight);
+			_viewArea.drawRectangle(0, 0, viewAreaWidth, viewAreaHeight);
 			_viewArea.endFill();
 			addChild(_viewArea);
 			
-			var UIAssetX:Number = viewAreaX + viewAreaWidth + 20;
+			var margin:Number = 20;
+			var UIAssetX:Number = viewAreaX + viewAreaWidth + margin;
 			
 			// _browserButton
-			_browserButton = new TextButton(UIAssetX, viewAreaY, 200, 30, "Select Resource Folder");
+			_browserButton = new TextButton(UIAssetX, viewAreaY, 200, 30,
+				"Select Resource Folder", Align.CENTER, true);
 			_browserButton.addEventListener(TouchEvent.TOUCH, onBrowserButtonClicked);
 			addChild(_browserButton);
 			
@@ -84,7 +75,8 @@ package
 				UIAssetX, viewAreaBottom - radius * 2, radius, Mode.IMAGE_MODE, changeMode));
 			
 			// _spriteSheetBox
-			
+			_spriteSheetBox = new ComboBox(UIAssetX, viewAreaY + _browserButton.height + margin, 200, 20, loadSpriteSheet);
+			addChild(_spriteSheetBox);
 			
 			setMode(viewAreaX, viewAreaY, viewAreaWidth, viewAreaHeight, UIAssetX);			
 		}
@@ -121,12 +113,57 @@ package
 			changeMode(Mode.ANIMATION_MODE);
 		}
 		
+		private function changeMode(mode:String):void
+		{
+			if (_modes && _modes[Mode.ANIMATION_MODE] && _modes[Mode.IMAGE_MODE])
+			{
+				if (mode == Mode.ANIMATION_MODE)
+				{
+					_modes[Mode.IMAGE_MODE].deactivate();
+					_modes[Mode.ANIMATION_MODE].activate();
+				}
+				else if (mode == Mode.IMAGE_MODE)
+				{
+					_modes[Mode.ANIMATION_MODE].deactivate();
+					_modes[Mode.IMAGE_MODE].activate();
+				}
+			}
+		}
+		
+		private function loadSpriteSheet(name:String):void
+		{
+			trace(name);
+			
+			InputManager.getInstance().loadRequest(
+				ResourceType.SPRITE_SHEET, _resourceFolder, name,
+				showSpriteSheet, true);
+		}
+		
 		private function showSpriteSheet(spriteSheet:Image):void
 		{
 			if (spriteSheet)
 			{
-				spriteSheet.visible = true;
-				addChild(spriteSheet);
+				var margin:Number = 150;
+				var actualViewAreaWidth:Number = _viewArea.width - margin;
+				var actualViewAreaHeight:Number = _viewArea.height - margin;
+				
+				var scale:Number;
+				if (spriteSheet.width > actualViewAreaWidth)
+				{
+					scale = actualViewAreaWidth / spriteSheet.width; 
+					//spriteSheet.x = 
+					spriteSheet.scale = scale;
+				}
+				else if (spriteSheet.height > actualViewAreaHeight)
+				{
+					scale = actualViewAreaHeight / spriteSheet.height;
+					spriteSheet.scale = scale;
+				}
+				
+				spriteSheet.x = (_viewArea.width / 2) - (spriteSheet.width / 2);
+				spriteSheet.y = (_viewArea.height / 2) - (spriteSheet.height / 2);
+				
+				_viewArea.addChild(spriteSheet);
 			}
 		}
 		
@@ -159,6 +196,27 @@ package
 		private function onResourceFolderSelected(event:Event):void
 		{	
 			_resourceFolder = event.target as File;
+			
+			if (_resourceFolder.exists)
+			{
+				var list:Array = _resourceFolder.getDirectoryListing();
+				
+				if (list && list.length > 0)
+				{
+					for (var i:int = 0; i < list.length; i++)
+					{
+						if(list[i].name.match(/\.(png)$/i))
+						{
+							var name:String = File(list[i]).nativePath;
+							name = name.substring(name.lastIndexOf("\\") + 1, name.length);
+							name = name.substring(0, name.indexOf("."));
+							
+							_spriteSheetBox.addItem(name);
+						}
+					}
+					_spriteSheetBox.showMessage("Select Sprite Sheet");
+				}
+			}
 		}
 		
 		private function onExit(event:Event):void
