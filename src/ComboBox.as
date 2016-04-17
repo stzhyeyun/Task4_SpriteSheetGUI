@@ -5,7 +5,7 @@ package
 
 	public class ComboBox extends Sprite
 	{
-		private var _dropdownButton:Button;
+		private var _dropdownButton:ImageButton;
 		private var _selectedBox:Canvas;
 		private var _dropdownBox:Canvas;
 		private var _dropdown:Vector.<TextButton>;
