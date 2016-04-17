@@ -1,7 +1,6 @@
 package
 {
 	import starling.display.Canvas;
-	import starling.display.Sprite;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
@@ -10,7 +9,7 @@ package
 	import starling.utils.Align;
 	import starling.utils.Color;
 
-	public class TextButton extends Sprite
+	public class TextButton extends Button
 	{
 		private var _idle:Canvas;
 		private var _down:Canvas;
@@ -132,7 +131,7 @@ package
 			
 			if (action)
 			{
-				if (action.phase == TouchPhase.BEGAN)
+				if (action.phase == TouchPhase.BEGAN || action.phase == TouchPhase.MOVED)
 				{
 					_down.visible = true;
 				}
