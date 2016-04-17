@@ -6,7 +6,7 @@ package
 	{
 		private var _playButton:ImageButton;
 		private var _stopButton:ImageButton;
-		private var _releaseButton:ImageButton;
+		private var _removeButton:ImageButton;
 		
 		public function AnimationMode(id:String)
 		{
@@ -37,10 +37,10 @@ package
 				_stopButton.touchable = true;
 			}
 			
-			if (_releaseButton)
+			if (_removeButton)
 			{
-				_releaseButton.visible = true;
-				_releaseButton.touchable = true;
+				_removeButton.visible = true;
+				_removeButton.touchable = true;
 			}
 		}
 		
@@ -56,9 +56,9 @@ package
 				_stopButton.visible = false;
 			}
 			
-			if (_releaseButton)
+			if (_removeButton)
 			{
-				_releaseButton.visible = false;
+				_removeButton.visible = false;
 			}
 		}
 		
@@ -76,11 +76,11 @@ package
 			}
 			_stopButton = null;
 			
-			if (_releaseButton)
+			if (_removeButton)
 			{
-				_releaseButton.dispose();
+				_removeButton.dispose();
 			}
-			_releaseButton = null;
+			_removeButton = null;
 			
 			super.dispose();
 		}
