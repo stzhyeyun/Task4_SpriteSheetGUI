@@ -4,9 +4,9 @@ package
 
 	public class AnimationMode extends Mode
 	{
-		private var _playButton:Button;
-		private var _stopButton:Button;
-		private var _releaseButton:Button;
+		private var _playButton:ImageButton;
+		private var _stopButton:ImageButton;
+		private var _releaseButton:ImageButton;
 		
 		public function AnimationMode(id:String)
 		{
