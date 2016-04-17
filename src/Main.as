@@ -38,13 +38,13 @@ package
 			{
 				if (mode == Mode.ANIMATION_MODE)
 				{
-					Mode(_modes[Mode.IMAGE_MODE]).deactivate();
-					Mode(_modes[Mode.ANIMATION_MODE]).activate();
+					_modes[Mode.IMAGE_MODE].deactivate();
+					_modes[Mode.ANIMATION_MODE].activate();
 				}
 				else if (mode == Mode.IMAGE_MODE)
 				{
-					Mode(_modes[Mode.ANIMATION_MODE]).deactivate();
-					Mode(_modes[Mode.IMAGE_MODE]).activate();
+					_modes[Mode.ANIMATION_MODE].deactivate();
+					_modes[Mode.IMAGE_MODE].activate();
 				}
 			}
 		}
@@ -64,6 +64,7 @@ package
 			var viewAreaHeight:Number = Starling.current.stage.stageHeight * 0.7;
 			var viewAreaX:Number = Starling.current.stage.stageWidth * 0.05;
 			var viewAreaY:Number = Starling.current.stage.stageHeight / 2 - viewAreaHeight / 2;
+			var viewAreaBottom:Number = viewAreaY + viewAreaHeight;
 			
 			_viewArea = new Canvas();
 			_viewArea.beginFill();
@@ -83,9 +84,9 @@ package
 			
 			_radioButtonManager = new RadioButtonManager();
 			addChild(_radioButtonManager.addButton(
-				UIAssetX, viewAreaY + viewAreaHeight - radius * 6, radius, Mode.ANIMATION_MODE, changeMode));
+				UIAssetX, viewAreaBottom - radius * 6, radius, Mode.ANIMATION_MODE, changeMode));
 			addChild(_radioButtonManager.addButton(
-				UIAssetX, viewAreaY + viewAreaHeight - radius * 2, radius, Mode.IMAGE_MODE, changeMode));
+				UIAssetX, viewAreaBottom - radius * 2, radius, Mode.IMAGE_MODE, changeMode));
 			
 			// _spriteSheetBox
 			
@@ -108,8 +109,8 @@ package
 				}
 			}
 			
-			_modes[Mode.IMAGE_MODE] = new AnimationMode(Mode.IMAGE_MODE);
 			var imgModeUI:Vector.<DisplayObject> = Mode(_modes[Mode.IMAGE_MODE]).setUI();
+			_modes[Mode.IMAGE_MODE] = new ImageMode(Mode.IMAGE_MODE);
 			
 			if (imgModeUI)
 			{
