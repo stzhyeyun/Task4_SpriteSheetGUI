@@ -27,7 +27,10 @@ package
 		
 		public function Main()
 		{
-			loadUIResource();
+			InputManager.getInstance().loadRequest(
+				ResourceType.UI_ASSET,
+				File.applicationDirectory.resolvePath("Resources"), "icons",
+				setUI, true);
 						
 			NativeApplication.nativeApplication.addEventListener(Event.EXITING, onExit);
 		}
@@ -47,14 +50,6 @@ package
 					_modes[Mode.IMAGE_MODE].activate();
 				}
 			}
-		}
-		
-		private function loadUIResource():void
-		{
-			InputManager.getInstance().loadRequest(
-				ResourceType.UI_ASSET,
-				File.applicationDirectory.resolvePath("Resources"), "icons",
-				setUI, true);
 		}
 		
 		private function setUI():void
