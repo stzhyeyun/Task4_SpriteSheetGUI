@@ -38,7 +38,7 @@ package
 		
 		public function set spriteSheetBitmapData(bitmapData:BitmapData):void
 		{
-			_spriteSheetBitmapData = spriteSheetBitmapData;
+			_spriteSheetBitmapData = bitmapData;
 		}
 		
 		public function dispose():void

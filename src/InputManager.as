@@ -8,6 +8,7 @@ package
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.utils.Dictionary;
 	
@@ -18,7 +19,8 @@ package
 	{
 		private static var _instance:InputManager;
 		
-		private var _loader:Loader;
+		private var _pngLoader:Loader;
+		private var _xmlLoader:URLLoader;
 		private var _queue:Vector.<LoadInfo>;
 		private var _setUI:Function;
 		private var _showSpriteSheet:Function;
@@ -134,13 +136,13 @@ package
 		{	
 			if (_queue && _queue.length > 0)
 			{
-				if (!_loader)
+				if (!_pngLoader)
 				{
-					_loader = new Loader();
+					_pngLoader = new Loader();
 				}
 				
-				_loader.load(new URLRequest(_queue[0].path + "\\" + _queue[0].name + ".png"));
-				_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onCompleteLoadPNG);
+				_pngLoader.load(new URLRequest(_queue[0].path + "\\" + _queue[0].name + ".png"));
+				_pngLoader.contentLoaderInfo.addEventListener(Event.COMPLETE, onCompleteLoadPNG);
 			}
 		}
 		
@@ -148,13 +150,13 @@ package
 		{	
 			if (_queue && _queue.length > 0)
 			{
-				if (!_loader)
+				if (!_xmlLoader)
 				{
-					_loader = new Loader();
+					_xmlLoader = new URLLoader();
 				}
 				
-				_loader.load(new URLRequest(_queue[0].path + "\\" + _queue[0].name + ".xml"));
-				_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, onCompleteLoadXML);
+				_xmlLoader.load(new URLRequest(_queue[0].path + "\\" + _queue[0].name + ".xml"));
+				_xmlLoader.addEventListener(Event.COMPLETE, onCompleteLoadXML);
 			}
 		}
 		
@@ -206,30 +208,23 @@ package
 			{
 				return;
 			}
-			
-			var contents:SpriteSheet = new SpriteSheet();
-			
-			// Sprite Sheet
-			var spriteSheet:Image = new Image(Texture.fromBitmapData(_queue[0].spriteSheetBitmapData));
-			spriteSheet.name = xml.child("SpriteSheet")[0].attribute("name");
-			contents.spriteSheet = spriteSheet;
-			
+
 			// Sprite
-			var sprites:Vector.<Image> = new Vector.<Image>();
+			var textures:Vector.<TextureWithName> = new Vector.<TextureWithName>();
 			for (var i:int = 0; i < xml.child("Sprite").length(); i++)
 			{
 				var name:String = xml.child("Sprite")[i].attribute("name");
-				var x:Number = xml.child("Sprite")[i].attribute("x") as Number;
-				var y:Number = xml.child("Sprite")[i].attribute("y") as Number;
-				var width:Number = xml.child("Sprite")[i].attribute("width") as Number;
-				var height:Number = xml.child("Sprite")[i].attribute("height") as Number;
+				var x:Number = xml.child("Sprite")[i].attribute("x");
+				var y:Number = xml.child("Sprite")[i].attribute("y");
+				var width:Number = xml.child("Sprite")[i].attribute("width");
+				var height:Number = xml.child("Sprite")[i].attribute("height");
 				var isRotated:Boolean = xml.child("Sprite")[i].attribute("rotated") as Boolean;
 				
-				var texture:Texture;
+				var canvas:BitmapData;
 				
 				if (isRotated)
 				{
-					var canvas:BitmapData = new BitmapData(height, width);
+					canvas = new BitmapData(height, width);
 					
 					var mat:Matrix = new Matrix();
 					mat.rotate(degreeToRadian(-90));
@@ -237,28 +232,67 @@ package
 					
 					canvas.draw(_queue[0].spriteSheetBitmapData, mat,
 						null, null, null, true); // need test
-					
-					texture = Texture.fromBitmapData(canvas);
 				}
 				else
 				{
-					var canvas:BitmapData = new BitmapData(width, height);
+					canvas = new BitmapData(width, height);
 					
 					canvas.copyPixels(
 						_queue[0].spriteSheetBitmapData,
 						new Rectangle(x, y, width, height),
 						new Point(0, 0));
-					
-					texture = Texture.fromBitmapData(canvas);
 				}
 				
-				var sprite:Image = new Image(texture);
-				sprite.name = name;
-				sprites.push(sprite);
+				var texture:TextureWithName = new TextureWithName();
+				texture.texture = Texture.fromBitmapData(canvas);
+				texture.name = name;
+
+				textures.push(texture);
 			}
-			contents.sprites = sprites;
 			
-			_spriteSheets[contents.spriteSheet.name] = contents;
+			switch (_queue[0].type)
+			{
+				case ResourceType.UI_ASSET:
+				{
+					if (!_UIResources)
+					{
+						_UIResources = new Dictionary();
+					}
+					
+					for (var i:int = 0; i < textures.length; i++)
+					{
+						_UIResources[textures[i].name] = textures[i].texture;
+					}
+				} 
+					break;
+				
+				case ResourceType.SPRITE_SHEET:
+				{
+					var contents:SpriteSheet = new SpriteSheet();
+					
+					// Sprite Sheet
+					var spriteSheet:Image = new Image(Texture.fromBitmapData(_queue[0].spriteSheetBitmapData));
+					spriteSheet.name = _queue[0].name;
+					contents.spriteSheet = spriteSheet;
+					
+					// Sprite
+					var sprites:Vector.<Image> = new Vector.<Image>();
+					for (var i:int = 0; i < textures.length; i++)
+					{
+						var sprite:Image = new Image(textures[i].texture);
+						sprite.name = textures[i].name;
+						sprites.push(sprite);
+					}
+					contents.sprites = sprites;
+					
+					if (!_spriteSheets)
+					{
+						_spriteSheets = new Dictionary();
+					}
+					_spriteSheets[contents.spriteSheet.name] = contents;
+				} 
+					break;
+			}
 		}
 		
 		private function degreeToRadian(degree:Number):Number
@@ -268,11 +302,17 @@ package
 
 		private function clean():void
 		{
-			if (_loader)
+			if (_pngLoader)
 			{
-				_loader.unload();
+				_pngLoader.unload();
 			}
-			_loader = null;
+			_pngLoader = null;
+			
+			if (_xmlLoader)
+			{
+				_xmlLoader.close();
+			}
+			_xmlLoader = null;
 			
 			if (_queue && _queue.length > 0)
 			{
