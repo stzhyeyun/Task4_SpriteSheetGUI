@@ -29,7 +29,7 @@ package
 			_changeMode = changeMode;
 			_setFocus = setFocus;
 			
-			this.x = x;
+			this.x = x + 3;
 			this.y = y;
 			
 			// _base
