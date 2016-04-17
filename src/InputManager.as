@@ -183,7 +183,7 @@ package
 				
 				case ResourceType.SPRITE_SHEET:
 				{
-					_showSpriteSheet(_spriteSheets[_spriteSheets.length - 1].spriteSheet);
+					_showSpriteSheet(_spriteSheets[_queue[0].name].spriteSheet);
 				} 
 					break;
 			}
