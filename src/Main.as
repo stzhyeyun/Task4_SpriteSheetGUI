@@ -139,31 +139,14 @@ package
 				showSpriteSheet, true);
 		}
 		
-		private function showSpriteSheet(spriteSheet:Image):void
+		private function showSpriteSheet(contents:SpriteSheet):void
 		{
-			if (spriteSheet)
+			if (contents)
 			{
-				var margin:Number = 150;
-				var actualViewAreaWidth:Number = _viewArea.width - margin;
-				var actualViewAreaHeight:Number = _viewArea.height - margin;
-				
-				var scale:Number;
-				if (spriteSheet.width > actualViewAreaWidth)
-				{
-					scale = actualViewAreaWidth / spriteSheet.width; 
-					//spriteSheet.x = 
-					spriteSheet.scale = scale;
-				}
-				else if (spriteSheet.height > actualViewAreaHeight)
-				{
-					scale = actualViewAreaHeight / spriteSheet.height;
-					spriteSheet.scale = scale;
-				}
-				
-				spriteSheet.x = (_viewArea.width / 2) - (spriteSheet.width / 2);
-				spriteSheet.y = (_viewArea.height / 2) - (spriteSheet.height / 2);
-				
-				_viewArea.addChild(spriteSheet);
+				_selectedSpriteSheet = contents;
+				_numSprite = _selectedSpriteSheet.sprites.length;
+
+				_viewArea.addChild(adjustViewingItem(_selectedSpriteSheet.spriteSheet));
 			}
 		}
 		
