@@ -46,38 +46,37 @@ package
 						
 			NativeApplication.nativeApplication.addEventListener(Event.EXITING, onExit);
 		}
-
 		
 		private function setUI():void
 		{
 			// _viewArea
-			var viewAreaWidth:Number = Starling.current.stage.stageWidth * 0.7;
-			var viewAreaHeight:Number = Starling.current.stage.stageHeight * 0.7;
-			var viewAreaX:Number = Starling.current.stage.stageWidth * 0.05;
-			var viewAreaY:Number = Starling.current.stage.stageHeight / 2 - viewAreaHeight / 2;
-			var viewAreaBottom:Number = viewAreaY + viewAreaHeight;
-			
 			_viewArea = new Canvas();
-			_viewArea.x = viewAreaX;
-			_viewArea.y = viewAreaY;
-			_viewArea.width = viewAreaWidth;
-			_viewArea.height = viewAreaHeight;			
 			_viewArea.beginFill();
-			_viewArea.drawRectangle(0, 0, viewAreaWidth, viewAreaHeight);
+			_viewArea.drawRectangle(
+				0, 0,
+				Starling.current.stage.stageWidth * 0.7,
+				Starling.current.stage.stageHeight * 0.7);
 			_viewArea.endFill();
+			_viewArea.x = Starling.current.stage.stageWidth * 0.05;
+			_viewArea.y = (Starling.current.stage.stageHeight / 2) - (_viewArea.height / 2);
 			addChild(_viewArea);
 			
-			var margin:Number = 20;
-			var UIAssetX:Number = viewAreaX + viewAreaWidth + margin;
+			var viewAreaMargin:Number = 150;
+			_actualViewAreaWidth = _viewArea.width - viewAreaMargin;
+			_actualViewAreaHeight = _viewArea.height - viewAreaMargin;
+			
+			var UIAssetMargin:Number = 20;
+			var UIAssetX:Number = _viewArea.x + _viewArea.width + UIAssetMargin;
 			
 			// _browserButton
-			_browserButton = new TextButton(UIAssetX, viewAreaY, 200, 30,
+			_browserButton = new TextButton(UIAssetX, _viewArea.y, 200, 30,
 				"Select Resource Folder", Align.CENTER, true);
 			_browserButton.addEventListener(TouchEvent.TOUCH, onBrowserButtonClicked);
 			addChild(_browserButton);
 			
 			// _radioButtonManager
 			var radius:Number = 6;
+			var viewAreaBottom:Number = _viewArea.y + _viewArea.height;
 			
 			_radioButtonManager = new RadioButtonManager();
 			addChild(_radioButtonManager.addButton(
@@ -86,10 +85,10 @@ package
 				UIAssetX, viewAreaBottom - radius * 2, radius, Mode.IMAGE_MODE, changeMode));
 			
 			// _spriteSheetBox
-			_spriteSheetBox = new ComboBox(UIAssetX, viewAreaY + _browserButton.height + margin, 200, 20, loadSpriteSheet);
+			_spriteSheetBox = new ComboBox(UIAssetX, _viewArea.y + _browserButton.height + UIAssetMargin, 200, 20, loadSpriteSheet);
 			addChild(_spriteSheetBox);
 			
-			setMode(viewAreaX, viewAreaY, viewAreaWidth, viewAreaHeight, UIAssetX);			
+			setMode(_viewArea.x, _viewArea.y, _viewArea.width, _viewArea.height, UIAssetX);			
 		}
 		
 		private function setMode(
@@ -137,14 +136,14 @@ package
 				{
 					_modes[Mode.ANIMATION_MODE].deactivate();
 					_modes[Mode.IMAGE_MODE].activate();
+					
+					// clear view area
 				}
 			}
 		}
 		
 		private function loadSpriteSheet(name:String):void
 		{
-			trace(name);
-			
 			InputManager.getInstance().loadRequest(
 				ResourceType.SPRITE_SHEET, _resourceFolder, name,
 				showSpriteSheet, true);

@@ -101,12 +101,12 @@ package
 		{
 			
 		}
-		
+
 		public function showMessage(message:String):void
 		{
 			_selectedBox.text = message;
 		}
-		
+
 		private function open():void
 		{
 			if (_items && _items.length > 0)
