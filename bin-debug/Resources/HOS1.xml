@@ -1,0 +1,30 @@
+<SpriteSheet name="HOS1.png" width="2048" height="2048">
+  <Sprite name="raynor" x="0" y="0" width="448" height="480" rotated="false"/>
+  <Sprite name="sylvanas" x="0" y="480" width="512" height="320" rotated="false"/>
+  <Sprite name="zeratul" x="0" y="800" width="512" height="320" rotated="false"/>
+  <Sprite name="tyrande" x="0" y="1120" width="512" height="320" rotated="false"/>
+  <Sprite name="sgthammer" x="0" y="1440" width="512" height="320" rotated="false"/>
+  <Sprite name="sonya" x="512" y="1440" width="512" height="320" rotated="false"/>
+  <Sprite name="stitches" x="1024" y="1440" width="512" height="320" rotated="false"/>
+  <Sprite name="uther" x="1536" y="1440" width="512" height="320" rotated="false"/>
+  <Sprite name="rehgar" x="512" y="1120" width="512" height="320" rotated="false"/>
+  <Sprite name="tyrael" x="1024" y="1120" width="512" height="320" rotated="false"/>
+  <Sprite name="zagara" x="1536" y="1120" width="512" height="320" rotated="false"/>
+  <Sprite name="brightwing" x="512" y="800" width="480" height="300" rotated="false"/>
+  <Sprite name="johanna" x="992" y="800" width="480" height="300" rotated="false"/>
+  <Sprite name="gazlowe" x="1472" y="800" width="480" height="300" rotated="false"/>
+  <Sprite name="kerrigan" x="512" y="480" width="480" height="300" rotated="false"/>
+  <Sprite name="kharazim" x="992" y="480" width="480" height="300" rotated="false"/>
+  <Sprite name="kaelthas" x="1472" y="480" width="480" height="300" rotated="false"/>
+  <Sprite name="greymane" x="0" y="1760" width="480" height="270" rotated="false"/>
+  <Sprite name="illidan" x="448" y="0" width="360" height="360" rotated="false"/>
+  <Sprite name="malfurion" x="808" y="0" width="300" height="398" rotated="false"/>
+  <Sprite name="butcher" x="1108" y="0" width="400" height="291" rotated="false"/>
+  <Sprite name="xul" x="1508" y="0" width="295" height="384" rotated="false"/>
+  <Sprite name="falstad" x="480" y="1760" width="400" height="250" rotated="false"/>
+  <Sprite name="chen" x="880" y="1760" width="400" height="250" rotated="false"/>
+  <Sprite name="azmodan" x="1280" y="1760" width="400" height="250" rotated="false"/>
+  <Sprite name="etc" x="1680" y="1760" width="300" height="275" rotated="true"/>
+  <Sprite name="murky" x="1803" y="0" width="200" height="320" rotated="true"/>
+  <Sprite name="lunara" x="1108" y="291" width="320" height="180" rotated="false"/>
+</SpriteSheet>

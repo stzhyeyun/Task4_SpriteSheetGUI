@@ -1,0 +1,12 @@
+<SpriteSheet name="HOS2.png" width="1024" height="1024">
+  <Sprite name="liming" x="0" y="0" width="294" height="360" rotated="false"/>
+  <Sprite name="chogall" x="0" y="360" width="400" height="250" rotated="false"/>
+  <Sprite name="logo" x="0" y="610" width="553" height="150" rotated="false"/>
+  <Sprite name="valla" x="553" y="610" width="275" height="300" rotated="false"/>
+  <Sprite name="muradin" x="0" y="760" width="320" height="200" rotated="false"/>
+  <Sprite name="morales" x="400" y="360" width="320" height="200" rotated="false"/>
+  <Sprite name="nazeebo" x="294" y="0" width="320" height="200" rotated="false"/>
+  <Sprite name="leoric" x="614" y="0" width="320" height="200" rotated="false"/>
+  <Sprite name="abathur" x="720" y="200" width="200" height="320" rotated="true"/>
+  <Sprite name="rexxar" x="320" y="760" width="230" height="175" rotated="false"/>
+</SpriteSheet>
