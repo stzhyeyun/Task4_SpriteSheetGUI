@@ -298,6 +298,8 @@ package
 				
 				if (_currMode == Mode.IMAGE_MODE)
 				{
+					ImageMode(_modes[Mode.IMAGE_MODE]).spritesBox.removeAllItems();
+					
 					for (var i:int = 0; i < _selectedSpriteSheet.sprites.length; i++)
 					{
 						ImageMode(_modes[Mode.IMAGE_MODE]).spritesBox.
