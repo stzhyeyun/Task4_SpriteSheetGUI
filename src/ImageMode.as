@@ -15,14 +15,14 @@ package
 //		private var _quantityField:TextField;
 //		private var _nameField:TextField;
 		
-		private var _showPrevSprite:Function;
-		private var _showNextSprite:Function;
+		private var _onPrevButtonClicked:Function;
+		private var _onNextButtonClicked:Function;
 		
 		public function ImageMode(id:String, showPrevSprite:Function, showNextSprite:Function)
 		{
 			_id = id;
-			_showPrevSprite = showPrevSprite;
-			_showNextSprite = showNextSprite;	
+			_onPrevButtonClicked = showPrevSprite;
+			_onNextButtonClicked = showNextSprite;	
 		}
 		
 		public function setUI(
@@ -153,7 +153,7 @@ package
 			
 			if (action)
 			{
-				_showPrevSprite();
+				_onPrevButtonClicked();
 			}
 		}
 		
@@ -163,7 +163,7 @@ package
 			
 			if (action)
 			{
-				_showNextSprite();				
+				_onNextButtonClicked();				
 			}
 		}
 	}
