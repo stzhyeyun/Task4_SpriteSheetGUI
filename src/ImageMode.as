@@ -91,15 +91,15 @@ package
 				_nextButton.touchable = true;
 			}
 			
-			if (_quantityField)
-			{
-				_quantityField.visible = true;
-			}
-			
-			if (_nameField)
-			{
-				_nameField.visible = true;
-			}
+//			if (_quantityField)
+//			{
+//				_quantityField.visible = true;
+//			}
+//			
+//			if (_nameField)
+//			{
+//				_nameField.visible = true;
+//			}
 		}
 		
 		public function deactivate():void
@@ -120,15 +120,15 @@ package
 				_nextButton.visible = false;
 			}
 			
-			if (_quantityField)
-			{
-				_quantityField.visible = false;
-			}
-			
-			if (_nameField)
-			{
-				_nameField.visible = false;
-			}
+//			if (_quantityField)
+//			{
+//				_quantityField.visible = false;
+//			}
+//			
+//			if (_nameField)
+//			{
+//				_nameField.visible = false;
+//			}
 		}
 		
 		public override function dispose():void

@@ -48,15 +48,133 @@ package
 		
 		public function Main()
 		{
+			// UI 에셋 로딩
 			InputManager.getInstance().loadRequest(
 				ResourceType.UI_ASSET,
 				File.applicationDirectory.resolvePath("Resources"), "icons",
-				setUI, true);
+				onUIAssetLoaded, true);
 						
 			NativeApplication.nativeApplication.addEventListener(Event.EXITING, onExit);
 		}
 		
-		private function setUI():void
+		/**
+		 * AnimationMode와 ImageMode를 세팅합니다. 
+		 * @param viewAreaX _viewArea의 x 좌표입니다.
+		 * @param viewAreaY _viewArea의 y 좌표입니다.
+		 * @param viewAreaWidth _viewArea의 너비입니다.
+		 * @param viewAreaHeight _viewArea의 높이입니다.
+		 * @param UIAssetX _viewArea 우측에 위치하는 UI 에셋의 x 좌표입니다.
+		 * 
+		 */
+		private function setMode(
+			viewAreaX:Number, viewAreaY:Number, viewAreaWidth:Number, viewAreaHeight:Number, UIAssetX:Number):void
+		{
+			_modes = new Dictionary();
+			
+			// Image Mode
+			_modes[Mode.IMAGE_MODE] = new ImageMode(Mode.IMAGE_MODE, onPrevButtonClicked, onNextButtonClicked);
+			var imgModeUI:Vector.<DisplayObject> =
+				_modes[Mode.IMAGE_MODE].setUI(viewAreaX, viewAreaY, viewAreaWidth, viewAreaHeight, UIAssetX, onSpriteSelected);
+			
+			if (imgModeUI)
+			{
+				for (var i:int = 0; i < imgModeUI.length; i++)
+				{
+					addChild(imgModeUI[i]);
+				}
+			}
+			
+			// Animation Mode
+			_modes[Mode.ANIMATION_MODE] = new AnimationMode(
+				Mode.ANIMATION_MODE, onPlayButtonClicked, onStopButtonClicked, onReleaseButtonClicked);
+			var animModeUI:Vector.<DisplayObject> =
+				_modes[Mode.ANIMATION_MODE].setUI(viewAreaX, viewAreaY, viewAreaWidth, viewAreaHeight, UIAssetX);
+			
+			if (animModeUI)
+			{
+				for (var i:int = 0; i < animModeUI.length; i++)
+				{
+					addChild(animModeUI[i]);
+				}
+			}
+			
+			onModeSelected(Mode.ANIMATION_MODE);
+		}
+		
+		/**
+		 * 실질적 View 영역보다 큰 스프라이트의 크기를 조정합니다. 
+		 * @param item 크기를 조정하고자 하는 DisplayObject입니다.
+		 * @return 크기가 조정된 DisplayObject를 반환합니다.
+		 * 
+		 */
+		private function adjustViewingItem(item:DisplayObject):DisplayObject // 개선 필요
+		{
+			var scale:Number = item.scale;
+			
+			if (item.width > _actualViewAreaWidth)
+			{
+				scale = scale * _actualViewAreaWidth / item.width; 
+			}
+			
+			if (item.height > _actualViewAreaHeight)
+			{
+				scale = scale * _actualViewAreaHeight / item.height;
+			}
+			
+			item.scale = scale;
+			item.x = (_viewArea.width / 2) - (item.width / 2);
+			item.y = (_viewArea.height / 2) - (item.height / 2);
+			
+			return item;
+		}
+		
+		/**
+		 * 애니메이션 관련 객체를 초기화합니다. 
+		 * 
+		 */
+		private function resetAnimator():void
+		{
+			if (!_selectedSpriteSheet)
+			{
+				return;
+			}
+			
+			if (_timer)
+			{
+				_timer.stop();
+				_timer.reset();
+			}
+			
+			_viewArea.getChildByName(_selectedSpriteSheet.spriteSheet.name).visible = false;
+			
+			for (var i:int = 0; i < _selectedSpriteSheet.sprites.length; i++)
+			{
+				_selectedSpriteSheet.sprites[i].visible = false;
+			}
+			
+			_currSpriteIndex = -1;
+			_isPlaying = false;
+		}
+		
+		/**
+		 * 애니메이션 관련 객체를 제거합니다.
+		 * 
+		 */
+		private function cleanAnimator():void
+		{
+			resetAnimator();
+			
+			_viewArea.removeChild(_selectedSpriteSheet.spriteSheet);
+			_selectedSpriteSheet = null;
+			
+			_numSprite = 0;
+		}
+		
+		/**
+		 * UI 에셋 리소스의 로딩이 완료되면 에셋을 생성하고 세팅합니다. 
+		 * call by InputManager
+		 */
+		private function onUIAssetLoaded():void
 		{
 			// _viewArea
 			_viewArea = new Canvas();
@@ -84,7 +202,7 @@ package
 			// _spriteSheetBox
 			_spriteSheetBox = new ComboBox(
 				UIAssetX, _viewArea.y + _browserButton.height + UI_ASSET_MARGIN,
-				COMBO_BOX_WIDHT, COMBO_BOX_HEIGHT, "Sprite Sheet", loadSpriteSheet);
+				COMBO_BOX_WIDHT, COMBO_BOX_HEIGHT, "Sprite Sheet", onSpriteSheetSelected);
 			addChild(_spriteSheetBox);
 			
 			// _radioButtonManager
@@ -92,50 +210,20 @@ package
 			
 			_radioButtonManager = new RadioButtonManager();
 			addChild(_radioButtonManager.addButton(
-				UIAssetX, viewAreaBottom - _RADIO_BTN_RADIUS * 6, _RADIO_BTN_RADIUS, Mode.ANIMATION_MODE, changeMode));
+				UIAssetX, viewAreaBottom - _RADIO_BTN_RADIUS * 6, _RADIO_BTN_RADIUS, Mode.ANIMATION_MODE, onModeSelected));
 			addChild(_radioButtonManager.addButton(
-				UIAssetX, viewAreaBottom - _RADIO_BTN_RADIUS * 2, _RADIO_BTN_RADIUS, Mode.IMAGE_MODE, changeMode));
+				UIAssetX, viewAreaBottom - _RADIO_BTN_RADIUS * 2, _RADIO_BTN_RADIUS, Mode.IMAGE_MODE, onModeSelected));
 			
 			// Mode
 			setMode(_viewArea.x, _viewArea.y, _viewArea.width, _viewArea.height, UIAssetX);			
 		}
 		
-		private function setMode(
-			viewAreaX:Number, viewAreaY:Number, viewAreaWidth:Number, viewAreaHeight:Number, UIAssetX:Number):void
-		{
-			_modes = new Dictionary();
-			
-			// Image Mode
-			_modes[Mode.IMAGE_MODE] = new ImageMode(Mode.IMAGE_MODE, showPrevSprite, showNextSprite);
-			var imgModeUI:Vector.<DisplayObject> =
-				_modes[Mode.IMAGE_MODE].setUI(viewAreaX, viewAreaY, viewAreaWidth, viewAreaHeight, UIAssetX, showSprite);
-			
-			if (imgModeUI)
-			{
-				for (var i:int = 0; i < imgModeUI.length; i++)
-				{
-					addChild(imgModeUI[i]);
-				}
-			}
-			
-			// Animation Mode
-			_modes[Mode.ANIMATION_MODE] = new AnimationMode(
-				Mode.ANIMATION_MODE, playSpriteSheet, stopAnimation, releaseSpriteSheet);
-			var animModeUI:Vector.<DisplayObject> =
-				_modes[Mode.ANIMATION_MODE].setUI(viewAreaX, viewAreaY, viewAreaWidth, viewAreaHeight, UIAssetX);
-			
-			if (animModeUI)
-			{
-				for (var i:int = 0; i < animModeUI.length; i++)
-				{
-					addChild(animModeUI[i]);
-				}
-			}
-			
-			changeMode(Mode.ANIMATION_MODE);
-		}
-		
-		private function changeMode(mode:String):void
+		/**
+		 * 모드를 변환합니다. 
+		 * @param mode 변환할 모드의 이름입니다.
+		 * call by RadioButton / _radioButtonManager
+		 */
+		private function onModeSelected(mode:String):void
 		{
 			if (_modes && _modes[Mode.ANIMATION_MODE] && _modes[Mode.IMAGE_MODE])
 			{
@@ -178,16 +266,27 @@ package
 			}
 		}
 		
-		private function loadSpriteSheet(currItemName:String, prevItemName:String):void
+		/**
+		 * 새롭게 선택된 스프라이트 시트를 로드합니다. 
+		 * @param currItemName 불러오고자 하는 스프라이트 시트의 이름입니다.
+		 * @param prevItemName 현재 출력 중인 스프라이트 시트의 이름입니다. 출력 중인 스프라이트 시트가 없을 경무 null입니다.
+		 * call by _spriteSheetBox
+		 */
+		private function onSpriteSheetSelected(currItemName:String, prevItemName:String):void
 		{
 			resetAnimator();
 			
 			InputManager.getInstance().loadRequest(
 				ResourceType.SPRITE_SHEET, _resourceFolder, currItemName,
-				showSpriteSheet, true);
+				onSpriteSheetLoaded, true);
 		}
 		
-		private function showSpriteSheet(contents:SpriteSheet):void
+		/**
+		 * 스프라이트 시트의 로딩이 완료되면 시트를 View 영역에 출력합니다. 이미지 모드일 경우 시트가 포함하는 스프라이트 목록을 콤보 박스에 등록합니다. 
+		 * @param contents 로드된 스프라이트 시트입니다.
+		 * call by InputManager
+		 */
+		private function onSpriteSheetLoaded(contents:SpriteSheet):void
 		{
 			if (contents)
 			{
@@ -211,7 +310,71 @@ package
 			}
 		}
 		
-		private function showSprite(currItemName:String, prevItemName:String):void
+		/**
+		 * 현재 선택된 스프라이트 시트를 재생합니다.
+		 * call by AnimationMode
+		 */
+		private function onPlayButtonClicked():void
+		{
+			if (!_selectedSpriteSheet)
+			{
+				return;
+			}
+				
+			if (!_timer)
+			{
+				_timer = new Timer(_DELAY);
+				_timer.addEventListener(TimerEvent.TIMER, onTick);
+			}
+			_timer.start();
+			_isPlaying = true;
+			
+			_viewArea.getChildByName(_selectedSpriteSheet.spriteSheet.name).visible = false;
+		}
+		
+		/**
+		 * 스프라이트 재생을 정지하고 선택된 스트라이트 시트를 출력합니다. 
+		 * call by AnimationMode
+		 */
+		private function onStopButtonClicked():void
+		{
+			if (_isPlaying)
+			{
+				resetAnimator();
+				_viewArea.getChildByName(_selectedSpriteSheet.spriteSheet.name).visible = true;
+			}
+		}
+		
+		/**
+		 * 선택된 스프라이트 시트를 메모리(InputManager)에서 제거합니다. 
+		 * call by AnimationMode
+		 */
+		private function onReleaseButtonClicked():void
+		{
+			if (!_selectedSpriteSheet)
+			{
+				return;
+			}
+			
+			var name:String = _selectedSpriteSheet.spriteSheet.name;
+			
+			// @this
+			cleanAnimator();
+			
+			// @_spriteSheetBox
+			_spriteSheetBox.removeItem(name);
+			
+			// @InputManager
+			InputManager.getInstance().releaseRequest(name);
+		}
+		
+		/**
+		 * 콤보 박스에서 선택한 스프라이트를 View 영역에 출력합니다. 
+		 * @param currItemName 출력하고자 하는 스프라이트의 이름입니다.
+		 * @param prevItemName 현재 출력 중인 스프라이트의 이릅입니다. 출력 중인 스프라이트가 없을 경우 null입니다.
+		 * call by ComboBox (ImageMode)
+		 */
+		private function onSpriteSelected(currItemName:String, prevItemName:String):void
 		{
 			_viewArea.getChildByName(_selectedSpriteSheet.spriteSheet.name).visible = false;
 			
@@ -231,53 +394,11 @@ package
 			_currSpriteIndex = _selectedSpriteSheet.getIndex(currItemName);
 		}
 		
-		private function playSpriteSheet():void
-		{
-			if (!_selectedSpriteSheet)
-			{
-				return;
-			}
-				
-			if (!_timer)
-			{
-				_timer = new Timer(_DELAY);
-				_timer.addEventListener(TimerEvent.TIMER, onTick);
-			}
-			_timer.start();
-			_isPlaying = true;
-			
-			_viewArea.getChildByName(_selectedSpriteSheet.spriteSheet.name).visible = false;
-		}
-		
-		private function stopAnimation():void
-		{
-			if (_isPlaying)
-			{
-				resetAnimator();
-				_viewArea.getChildByName(_selectedSpriteSheet.spriteSheet.name).visible = true;
-			}
-		}
-		
-		private function releaseSpriteSheet():void
-		{
-			if (!_selectedSpriteSheet)
-			{
-				return;
-			}
-			
-			var name:String = _selectedSpriteSheet.spriteSheet.name;
-			
-			// @this
-			cleanAnimator();
-			
-			// @_spriteSheetBox
-			_spriteSheetBox.removeItem(name);
-			
-			// @InputManager
-			InputManager.getInstance().releaseRequest(name);
-		}
-		
-		private function showPrevSprite():void
+		/**
+		 * 현재 출력된 스프라이트의 이전 스프라이트를 출력합니다. 맨 처음 스프라이트일 경우 마지막 스프라이트를 출력합니다.
+		 * call by ImageMode
+		 */
+		private function onPrevButtonClicked():void
 		{
 			if (!_selectedSpriteSheet)
 			{
@@ -303,7 +424,11 @@ package
 			_viewArea.getChildByName(_selectedSpriteSheet.sprites[_currSpriteIndex].name).visible = true;
 		}
 		
-		private function showNextSprite():void
+		/**
+		 * 현재 출력된 스프라이트의 다음 스프라이트를 출력합니다. 마지막 스프라이트일 경우 맨 처음 스프라이트를 출력합니다.
+		 * call by ImageMode
+		 */
+		private function onNextButtonClicked():void
 		{
 			if (!_selectedSpriteSheet)
 			{
@@ -329,61 +454,11 @@ package
 			_viewArea.getChildByName(_selectedSpriteSheet.sprites[_currSpriteIndex].name).visible = true;
 		}
 		
-		private function adjustViewingItem(item:DisplayObject):DisplayObject
-		{
-			var scale:Number = item.scale;
-			
-			if (item.width > _actualViewAreaWidth)
-			{
-				scale = scale * _actualViewAreaWidth / item.width; 
-			}
-			
-			if (item.height > _actualViewAreaHeight)
-			{
-				scale = scale * _actualViewAreaHeight / item.height;
-			}
-			
-			item.scale = scale;
-			item.x = (_viewArea.width / 2) - (item.width / 2);
-			item.y = (_viewArea.height / 2) - (item.height / 2);
-			
-			return item;
-		}
-		
-		private function resetAnimator():void
-		{
-			if (!_selectedSpriteSheet)
-			{
-				return;
-			}
-			
-			if (_timer)
-			{
-				_timer.stop();
-				_timer.reset();
-			}
-			
-			_viewArea.getChildByName(_selectedSpriteSheet.spriteSheet.name).visible = false;
-			
-			for (var i:int = 0; i < _selectedSpriteSheet.sprites.length; i++)
-			{
-				_selectedSpriteSheet.sprites[i].visible = false;
-			}
-			
-			_currSpriteIndex = -1;
-			_isPlaying = false;
-		}
-		
-		private function cleanAnimator():void
-		{
-			resetAnimator();
-			
-			_viewArea.removeChild(_selectedSpriteSheet.spriteSheet);
-			_selectedSpriteSheet = null;
-			
-			_numSprite = 0;
-		}
-		
+		/**
+		 * _browserButton 클릭 시 리소스 폴더 지정을 위한 탐색기를 엽니다.
+		 * @param event 터치 이벤트입니다.
+		 * 
+		 */
 		private function onBrowserButtonClicked(event:TouchEvent):void
 		{			
 			var action:Touch = event.getTouch(_browserButton, TouchPhase.ENDED);
@@ -402,6 +477,11 @@ package
 			}
 		}
 		
+		/**
+		 * 탐색기에서 리소스 폴더를 선택하면 그 경로를 저장하고 해당 폴더에 존재하는 PNG 파일의 리스트를 _spriteSheetBox에 출력합니다.
+		 * @param event 선택 이벤트입니다.
+		 * 
+		 */
 		private function onResourceFolderSelected(event:Event):void
 		{	
 			_resourceFolder = event.target as File;
@@ -437,6 +517,11 @@ package
 			}
 		}
 		
+		/**
+		 * 애니메이션 재생 시 설정한 딜레이마다 호출되는 함수입니다. 현재 출력 중인 스프라이트를 숨기고 다음 인덱스의 스프라이트를 보이게 합니다. 
+		 * @param event 타이머 이벤트입니다.
+		 * 
+		 */
 		private function onTick(event:TimerEvent):void
 		{
 			var prevIndex:int = _currSpriteIndex;

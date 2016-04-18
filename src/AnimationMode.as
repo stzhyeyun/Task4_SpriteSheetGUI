@@ -12,17 +12,17 @@ package
 		private var _stopButton:ImageButton;
 		private var _releaseButton:ImageButton;
 		
-		private var _playSpriteSheet:Function;
-		private var _stopAnimation:Function;
-		private var _releaseSpriteSheet:Function;
+		private var _onPlayButtonClicked:Function;
+		private var _onStopButtonClicked:Function;
+		private var _onReleaseButtonClicked:Function;
 		
 		public function AnimationMode(
 			id:String, playSpriteSheet:Function, stopAnimation:Function, releaseSpriteSheet:Function)
 		{
 			_id = id;			
-			_playSpriteSheet = playSpriteSheet;
-			_stopAnimation = stopAnimation;
-			_releaseSpriteSheet = releaseSpriteSheet;
+			_onPlayButtonClicked = playSpriteSheet;
+			_onStopButtonClicked = stopAnimation;
+			_onReleaseButtonClicked = releaseSpriteSheet;
 		}
 		
 		public function setUI(
@@ -144,9 +144,9 @@ package
 			
 			if (action)
 			{
-				if (_playSpriteSheet)
+				if (_onPlayButtonClicked)
 				{
-					_playSpriteSheet();
+					_onPlayButtonClicked();
 				}
 			}
 		}
@@ -157,9 +157,9 @@ package
 			
 			if (action)
 			{
-				if (_stopAnimation)
+				if (_onStopButtonClicked)
 				{
-					_stopAnimation();
+					_onStopButtonClicked();
 				}
 			}
 		}
@@ -170,9 +170,9 @@ package
 			
 			if (action)
 			{
-				if (_releaseSpriteSheet)
+				if (_onReleaseButtonClicked)
 				{
-					_releaseSpriteSheet();
+					_onReleaseButtonClicked();
 				}
 			}
 		}

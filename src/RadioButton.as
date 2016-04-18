@@ -18,7 +18,7 @@ package
 		private var _base:Canvas
 		private var _cursor:Canvas;
 		private var _textField:TextField;
-		private var _changeMode:Function;
+		private var _onModeSelected:Function;
 		private var _setFocus:Function;
 		
 		public function RadioButton(
@@ -26,7 +26,7 @@ package
 		{
 			_id = id;
 			_mode = mode;
-			_changeMode = changeMode;
+			_onModeSelected = changeMode;
 			_setFocus = setFocus;
 			
 			this.x = x + 3;
@@ -68,7 +68,7 @@ package
 		{
 			_cursor.visible = true;
 			
-			_changeMode(_mode);
+			_onModeSelected(_mode);
 		}
 		
 		public function deselect():void
@@ -105,7 +105,7 @@ package
 			}
 			_textField = null;
 			
-			_changeMode = null;
+			_onModeSelected = null;
 			_setFocus = null;
 			
 			super.dispose();

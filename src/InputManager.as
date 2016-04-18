@@ -22,8 +22,8 @@ package
 		private var _pngLoader:Loader;
 		private var _xmlLoader:URLLoader;
 		private var _queue:Vector.<LoadInfo>;
-		private var _setUI:Function;
-		private var _showSpriteSheet:Function;
+		private var _onUIAssetLoaded:Function;
+		private var _onSpriteSheetLoaded:Function;
 
 		private var _UIResources:Dictionary; // key : String, value : Texture
 		private var _spriteSheets:Dictionary; // key : String, value : SpriteSheet
@@ -107,7 +107,7 @@ package
 			{
 				case ResourceType.UI_ASSET:
 				{
-					_setUI = func;
+					_onUIAssetLoaded = func;
 					
 					if (_UIResources && _UIResources[name])
 					{
@@ -118,11 +118,11 @@ package
 				
 				case ResourceType.SPRITE_SHEET:
 				{
-					_showSpriteSheet = func;
+					_onSpriteSheetLoaded = func;
 					
 					if (_spriteSheets && _spriteSheets[name])
 					{
-						_showSpriteSheet(_spriteSheets[name]);
+						_onSpriteSheetLoaded(_spriteSheets[name]);
 						return;
 					}
 				} 
@@ -199,13 +199,13 @@ package
 			{
 				case ResourceType.UI_ASSET:
 				{
-					_setUI();
+					_onUIAssetLoaded();
 				} 
 					break;
 				
 				case ResourceType.SPRITE_SHEET:
 				{
-					_showSpriteSheet(_spriteSheets[_queue[0].name]);
+					_onSpriteSheetLoaded(_spriteSheets[_queue[0].name]);
 				} 
 					break;
 			}
@@ -347,8 +347,8 @@ package
 			}
 			_queue = null;
 
-			_setUI = null;
-			_showSpriteSheet = null;
+			_onUIAssetLoaded = null;
+			_onSpriteSheetLoaded = null;
 		}
 	}
 }
