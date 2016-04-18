@@ -2,13 +2,14 @@ package
 {
 	import flash.desktop.NativeApplication;
 	import flash.events.Event;
+	import flash.events.TimerEvent;
 	import flash.filesystem.File;
 	import flash.utils.Dictionary;
+	import flash.utils.Timer;
 	
 	import starling.core.Starling;
 	import starling.display.Canvas;
 	import starling.display.DisplayObject;
-	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
@@ -17,7 +18,7 @@ package
 	
 	public class Main extends Sprite
 	{
-		private var _resourceFolder:File;
+		private const _delay:Number = 1500;
 		
 		// UI
 		private var _viewArea:Canvas;
@@ -25,6 +26,16 @@ package
 		private var _radioButtonManager:RadioButtonManager;
 		private var _spriteSheetBox:ComboBox;
 		private var _modes:Dictionary; // Mode
+		
+		// Animation
+		private var _timer:Timer;
+		private var _resourceFolder:File;
+		private var _selectedSpriteSheet:SpriteSheet;
+		private var _numSprite:int;
+		private var _currSpriteIndex:int = -1;
+		private var _isLooped:Boolean = false;
+		private var _actualViewAreaWidth:Number;
+		private var _actualViewAreaHeight:Number;
 		
 		public function Main()
 		{
@@ -86,7 +97,7 @@ package
 		{
 			_modes = new Dictionary();
 			
-			_modes[Mode.ANIMATION_MODE] = new AnimationMode(Mode.ANIMATION_MODE);
+			_modes[Mode.ANIMATION_MODE] = new AnimationMode(Mode.ANIMATION_MODE, playSpriteSheet);
 			var animModeUI:Vector.<DisplayObject> =
 				_modes[Mode.ANIMATION_MODE].setUI(viewAreaX, viewAreaY, viewAreaWidth, viewAreaHeight, UIAssetX);
 			
@@ -150,12 +161,21 @@ package
 			}
 		}
 		
-		private function playSpriteSheet(sprites:Vector.<Image>):void
+		private function playSpriteSheet():void
 		{
-			if (sprites && sprites.length > 0)
+			if (!_selectedSpriteSheet)
 			{
-				// timer
+				return;
 			}
+				
+			if (!_timer)
+			{
+				_timer = new Timer(_delay);
+				_timer.addEventListener(TimerEvent.TIMER, onTick);
+			}
+			_timer.start();
+			
+			_viewArea.getChildByName(_selectedSpriteSheet.spriteSheet.name).visible = false;
 		}
 		
 		private function onBrowserButtonClicked(event:TouchEvent):void
@@ -174,6 +194,26 @@ package
 					_resourceFolder.browseForDirectory("Select Resource Folder");
 				}
 			}
+		}
+		
+		private function adjustViewingItem(item:DisplayObject):DisplayObject
+		{
+			var scale:Number;
+			if (item.width > _actualViewAreaWidth)
+			{
+				scale = _actualViewAreaWidth / item.width; 
+				item.scale = scale;
+			}
+			else if (item.height > _actualViewAreaHeight)
+			{
+				scale = _actualViewAreaHeight / item.height;
+				item.scale = scale;
+			}
+			
+			item.x = (_viewArea.width / 2) - (item.width / 2);
+			item.y = (_viewArea.height / 2) - (item.height / 2);
+			
+			return item;
 		}
 		
 		private function onResourceFolderSelected(event:Event):void
@@ -200,6 +240,32 @@ package
 					_spriteSheetBox.showMessage("Select Sprite Sheet");
 				}
 			}
+		}
+		
+		private function onTick(event:TimerEvent):void
+		{
+			var prevIndex:int = _currSpriteIndex;
+			_currSpriteIndex++;
+			
+			if (_currSpriteIndex > _numSprite - 1)
+			{
+				_currSpriteIndex = 0;
+				_isLooped = true;
+			}
+			
+			if (prevIndex >= 0)
+			{
+				_viewArea.getChildByName(_selectedSpriteSheet.sprites[prevIndex].name).visible = false;
+			}
+			
+			if (!_isLooped)
+			{
+				_viewArea.addChild(adjustViewingItem(_selectedSpriteSheet.sprites[_currSpriteIndex]));
+			}
+			else
+			{
+				_viewArea.getChildByName(_selectedSpriteSheet.sprites[_currSpriteIndex].name).visible = true;
+			}	
 		}
 		
 		private function onExit(event:Event):void

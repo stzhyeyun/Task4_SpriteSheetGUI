@@ -1,6 +1,9 @@
 package
 {
 	import starling.display.DisplayObject;
+	import starling.events.Touch;
+	import starling.events.TouchEvent;
+	import starling.events.TouchPhase;
 	import starling.textures.Texture;
 
 	public class AnimationMode extends Mode
@@ -9,9 +12,13 @@ package
 		private var _stopButton:ImageButton;
 		private var _removeButton:ImageButton;
 		
-		public function AnimationMode(id:String)
+		private var _playSpriteSheet:Function;
+		
+		public function AnimationMode(id:String, playSpriteSheet:Function)
 		{
 			_id = id;
+			
+			_playSpriteSheet = playSpriteSheet;
 		}
 		
 		public function setUI(
@@ -32,6 +39,7 @@ package
 					viewAreaRight - playBtnTex.width * scale - margin, viewAreaY + margin,
 					scale, playBtnTex);
 				_playButton.visible = false;
+				_playButton.addEventListener(TouchEvent.TOUCH, onPlayButtonClicked);
 				objects.push(_playButton);
 			}
 			
@@ -122,6 +130,19 @@ package
 			_removeButton = null;
 			
 			super.dispose();
+		}
+		
+		private function onPlayButtonClicked(event:TouchEvent):void
+		{			
+			var action:Touch = event.getTouch(_playButton, TouchPhase.ENDED);
+			
+			if (action)
+			{
+				if (_playSpriteSheet)
+				{
+					_playSpriteSheet();
+				}
+			}
 		}
 	}
 }
