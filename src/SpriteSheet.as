@@ -12,6 +12,38 @@ package
 			
 		}
 		
+		public function find(name:String):Image
+		{
+			if (_sprites && _sprites.length > 0)
+			{
+				for (var i:int = 0; i < _sprites.length; i++)
+				{
+					if (_sprites[i].name == name)
+					{
+						return _sprites[i];
+					}
+				}
+			}
+			
+			return null;
+		}
+		
+		public function getIndex(name:String):int
+		{
+			if (_sprites && _sprites.length > 0)
+			{
+				for (var i:int = 0; i < _sprites.length; i++)
+				{
+					if (_sprites[i].name == name)
+					{
+						return i;
+					}
+				}
+			}
+			
+			return -1;
+		}
+		
 		public function get spriteSheet():Image
 		{
 			return _spriteSheet;
