@@ -10,15 +10,20 @@ package
 	{
 		private var _playButton:ImageButton;
 		private var _stopButton:ImageButton;
-		private var _removeButton:ImageButton;
+		private var _releaseButton:ImageButton;
 		
 		private var _playSpriteSheet:Function;
+		private var _stopAnimation:Function;
+		private var _releaseSpriteSheet:Function;
 		
-		public function AnimationMode(id:String, playSpriteSheet:Function)
+		public function AnimationMode(
+			id:String, playSpriteSheet:Function, stopAnimation:Function, releaseSpriteSheet:Function)
 		{
 			_id = id;
 			
 			_playSpriteSheet = playSpriteSheet;
+			_stopAnimation = stopAnimation;
+			_releaseSpriteSheet = releaseSpriteSheet;
 		}
 		
 		public function setUI(
@@ -52,19 +57,21 @@ package
 					_playButton.y + stopBtnTex.height * scale + margin,
 					scale, stopBtnTex);
 				_stopButton.visible = false;
+				_stopButton.addEventListener(TouchEvent.TOUCH, onStopButtonClicked);
 				objects.push(_stopButton);
 			}
 			
-			// _removeButton
-			var removeBtnTex:Texture = InputManager.getInstance().getTexture("remove");
-			if (removeBtnTex)
+			// _releaseButton
+			var releaseBtnTex:Texture = InputManager.getInstance().getTexture("release");
+			if (releaseBtnTex)
 			{		
-				_removeButton = new ImageButton(
-					viewAreaRight - removeBtnTex.width * scale - margin,
-					_stopButton.y + removeBtnTex.height * scale + margin,
-					scale, removeBtnTex);
-				_removeButton.visible = false;
-				objects.push(_removeButton);
+				_releaseButton = new ImageButton(
+					viewAreaRight - releaseBtnTex.width * scale - margin,
+					_stopButton.y + releaseBtnTex.height * scale + margin,
+					scale, releaseBtnTex);
+				_releaseButton.visible = false;
+				_releaseButton.addEventListener(TouchEvent.TOUCH, onReleaseButtonClicked);
+				objects.push(_releaseButton);
 			}
 			
 			return objects;
@@ -84,10 +91,10 @@ package
 				_stopButton.touchable = true;
 			}
 			
-			if (_removeButton)
+			if (_releaseButton)
 			{
-				_removeButton.visible = true;
-				_removeButton.touchable = true;
+				_releaseButton.visible = true;
+				_releaseButton.touchable = true;
 			}
 		}
 		
@@ -103,9 +110,9 @@ package
 				_stopButton.visible = false;
 			}
 			
-			if (_removeButton)
+			if (_releaseButton)
 			{
-				_removeButton.visible = false;
+				_releaseButton.visible = false;
 			}
 		}
 		
@@ -123,11 +130,11 @@ package
 			}
 			_stopButton = null;
 			
-			if (_removeButton)
+			if (_releaseButton)
 			{
-				_removeButton.dispose();
+				_releaseButton.dispose();
 			}
-			_removeButton = null;
+			_releaseButton = null;
 			
 			super.dispose();
 		}
@@ -141,6 +148,32 @@ package
 				if (_playSpriteSheet)
 				{
 					_playSpriteSheet();
+				}
+			}
+		}
+		
+		private function onStopButtonClicked(event:TouchEvent):void
+		{			
+			var action:Touch = event.getTouch(_stopButton, TouchPhase.ENDED);
+			
+			if (action)
+			{
+				if (_stopAnimation)
+				{
+					_stopAnimation();
+				}
+			}
+		}
+		
+		private function onReleaseButtonClicked(event:TouchEvent):void
+		{			
+			var action:Touch = event.getTouch(_releaseButton, TouchPhase.ENDED);
+			
+			if (action)
+			{
+				if (_releaseSpriteSheet)
+				{
+					_releaseSpriteSheet();
 				}
 			}
 		}

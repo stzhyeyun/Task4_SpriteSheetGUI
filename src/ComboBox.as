@@ -85,6 +85,7 @@ package
 				_selectedBox.x, _items.length * _selectedBox.height + _selectedBox.height,
 				_selectedBox.width, _selectedBox.height,
 				name, Align.LEFT, false);
+			item.name = name;
 			item.visible = false;
 			item.addEventListener(TouchEvent.TOUCH, onItemClicked);
 			addChild(item);
@@ -94,12 +95,43 @@ package
 		
 		public function removeItem(name:String):void
 		{
-			
+			if (_items && _items.length > 0)
+			{
+				var removedIndex:int;
+				for (var i:int = 0; i < _items.length; i++)
+				{
+					if (_items[i].name == name)
+					{
+						_items[i].dispose();
+						_items[i] = null;
+						_items.removeAt(i);
+						removedIndex = i;
+					}
+				}
+				
+				if (_items.length > 0)
+				{
+					for (var i:int = removedIndex; i < _items.length; i++)
+					{
+						_items[i].y -= _selectedBox.height;
+					}
+				}
+			}
 		}
 		
 		public function removeAllItems():void
 		{
-			
+			if (_items && _items.length > 0)
+			{
+				for (var i:int = 0; i < _items.length; i++)
+				{
+					_items[i].dispose();
+					_items[i] = null;
+				}
+				_items = null;
+				
+				_selectedBox.text = "";
+			}
 		}
 
 		public function showMessage(message:String):void

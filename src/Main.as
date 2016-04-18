@@ -27,12 +27,13 @@ package
 		private var _spriteSheetBox:ComboBox;
 		private var _modes:Dictionary; // Mode
 		
-		// Animation
+		// Animation -> 별도 클래스로 구성?
 		private var _timer:Timer;
 		private var _resourceFolder:File;
 		private var _selectedSpriteSheet:SpriteSheet;
 		private var _numSprite:int;
 		private var _currSpriteIndex:int = -1;
+		private var _isPlaying:Boolean = false;
 		private var _isLooped:Boolean = false;
 		private var _actualViewAreaWidth:Number;
 		private var _actualViewAreaHeight:Number;
@@ -96,7 +97,8 @@ package
 		{
 			_modes = new Dictionary();
 			
-			_modes[Mode.ANIMATION_MODE] = new AnimationMode(Mode.ANIMATION_MODE, playSpriteSheet);
+			_modes[Mode.ANIMATION_MODE] = new AnimationMode(
+				Mode.ANIMATION_MODE, playSpriteSheet, stopAnimation, releaseSpriteSheet);
 			var animModeUI:Vector.<DisplayObject> =
 				_modes[Mode.ANIMATION_MODE].setUI(viewAreaX, viewAreaY, viewAreaWidth, viewAreaHeight, UIAssetX);
 			
@@ -173,26 +175,36 @@ package
 				_timer.addEventListener(TimerEvent.TIMER, onTick);
 			}
 			_timer.start();
+			_isPlaying = true;
 			
 			_viewArea.getChildByName(_selectedSpriteSheet.spriteSheet.name).visible = false;
 		}
 		
-		private function onBrowserButtonClicked(event:TouchEvent):void
-		{			
-			var action:Touch = event.getTouch(_browserButton, TouchPhase.ENDED);
-			
-			if (action)
+		private function stopAnimation():void
+		{
+			if (_isPlaying)
 			{
-				if (_browserButton.isIn(action.getLocation(this)))
-				{
-					if (!_resourceFolder)
-					{
-						_resourceFolder = new File();
-					}
-					_resourceFolder.addEventListener(Event.SELECT, onResourceFolderSelected);
-					_resourceFolder.browseForDirectory("Select Resource Folder");
-				}
+				resetAnimator();
 			}
+		}
+		
+		private function releaseSpriteSheet():void
+		{
+			if (!_selectedSpriteSheet)
+			{
+				return;
+			}
+			
+			var name:String = _selectedSpriteSheet.spriteSheet.name;
+			
+			// @this
+			cleanAnimator();
+			
+			// @_spriteSheetBox
+			_spriteSheetBox.removeAllItems();
+			
+			// @InputManager
+			InputManager.getInstance().releaseRequest(name);
 		}
 		
 		private function adjustViewingItem(item:DisplayObject):DisplayObject
@@ -213,6 +225,59 @@ package
 			item.y = (_viewArea.height / 2) - (item.height / 2);
 			
 			return item;
+		}
+		
+		private function resetAnimator():void
+		{
+			if (_timer)
+			{
+				_timer.stop();
+				_timer.reset();
+			}
+			
+			_viewArea.getChildByName(_selectedSpriteSheet.spriteSheet.name).visible = true;
+			
+			for (var i:int = 0; i < _selectedSpriteSheet.sprites.length; i++)
+			{
+				var child:DisplayObject = _viewArea.removeChild(_selectedSpriteSheet.sprites[i]);
+				
+				if (child)
+				{
+					child.visible = false;
+				}
+			}
+			
+			_currSpriteIndex = -1;
+			_isPlaying = false;
+			_isLooped = false;
+		}
+		
+		private function cleanAnimator():void
+		{
+			resetAnimator();
+			
+			_viewArea.removeChild(_selectedSpriteSheet.spriteSheet);
+			_selectedSpriteSheet = null;
+			
+			_numSprite = 0;
+		}
+		
+		private function onBrowserButtonClicked(event:TouchEvent):void
+		{			
+			var action:Touch = event.getTouch(_browserButton, TouchPhase.ENDED);
+			
+			if (action)
+			{
+				if (_browserButton.isIn(action.getLocation(this)))
+				{
+					if (!_resourceFolder)
+					{
+						_resourceFolder = new File();
+					}
+					_resourceFolder.addEventListener(Event.SELECT, onResourceFolderSelected);
+					_resourceFolder.browseForDirectory("Select Resource Folder");
+				}
+			}
 		}
 		
 		private function onResourceFolderSelected(event:Event):void
@@ -236,6 +301,7 @@ package
 							_spriteSheetBox.addItem(name);
 						}
 					}
+
 					_spriteSheetBox.showMessage("Select Sprite Sheet");
 				}
 			}
@@ -260,11 +326,8 @@ package
 			if (!_isLooped)
 			{
 				_viewArea.addChild(adjustViewingItem(_selectedSpriteSheet.sprites[_currSpriteIndex]));
-			}
-			else
-			{
-				_viewArea.getChildByName(_selectedSpriteSheet.sprites[_currSpriteIndex].name).visible = true;
-			}	
+			}			
+			_viewArea.getChildByName(_selectedSpriteSheet.sprites[_currSpriteIndex].name).visible = true;
 		}
 		
 		private function onExit(event:Event):void

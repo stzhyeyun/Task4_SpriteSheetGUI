@@ -132,6 +132,17 @@ package
 			}		
 		}
 		
+		public function releaseRequest(name:String):void
+		{
+			if (_spriteSheets[name])
+			{
+				SpriteSheet(_spriteSheets[name]).dispose();
+				_spriteSheets[name] = null;
+				
+				delete _spriteSheets[name];
+			}
+		}
+		
 		private function loadPNG():void
 		{	
 			if (_queue && _queue.length > 0)
