@@ -30,7 +30,7 @@ package
 			
 			_image = new Image(texture);
 			_image.scale = _defaultScale;
-			_image.addEventListener(TouchEvent.TOUCH, onMouseDown);
+			_image.addEventListener(TouchEvent.TOUCH, onMouseAction);
 			addChild(_image);
 			
 			this.x = x;
@@ -55,7 +55,7 @@ package
 			super.dispose();
 		}
 		
-		private function onMouseDown(event:TouchEvent):void
+		private function onMouseAction(event:TouchEvent):void
 		{			
 			var action:Touch = event.getTouch(this);
 			
