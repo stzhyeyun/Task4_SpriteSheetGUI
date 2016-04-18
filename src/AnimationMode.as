@@ -19,8 +19,7 @@ package
 		public function AnimationMode(
 			id:String, playSpriteSheet:Function, stopAnimation:Function, releaseSpriteSheet:Function)
 		{
-			_id = id;
-			
+			_id = id;			
 			_playSpriteSheet = playSpriteSheet;
 			_stopAnimation = stopAnimation;
 			_releaseSpriteSheet = releaseSpriteSheet;

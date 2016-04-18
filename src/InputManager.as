@@ -108,12 +108,23 @@ package
 				case ResourceType.UI_ASSET:
 				{
 					_setUI = func;
+					
+					if (_UIResources && _UIResources[name])
+					{
+						return;
+					}
 				} 
 					break;
 				
 				case ResourceType.SPRITE_SHEET:
 				{
 					_showSpriteSheet = func;
+					
+					if (_spriteSheets && _spriteSheets[name])
+					{
+						_showSpriteSheet(_spriteSheets[name]);
+						return;
+					}
 				} 
 					break;
 			}
@@ -229,7 +240,8 @@ package
 				var y:Number = xml.child("Sprite")[i].attribute("y");
 				var width:Number = xml.child("Sprite")[i].attribute("width");
 				var height:Number = xml.child("Sprite")[i].attribute("height");
-				var isRotated:Boolean = xml.child("Sprite")[i].attribute("rotated") as Boolean;
+				var str:String = xml.child("Sprite")[i].attribute("rotated"); 
+				var isRotated:Boolean = (str == "true"? true : false); 
 				
 				var canvas:BitmapData;
 				
@@ -242,7 +254,7 @@ package
 					mat.translate(x, y + width);
 					
 					canvas.draw(_queue[0].spriteSheetBitmapData, mat,
-						null, null, null, true); // need test
+						null, null, new Rectangle(x, y, width, height), true); // need fix
 				}
 				else
 				{

@@ -4,14 +4,19 @@ package
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
+	import starling.text.TextField;
+	import starling.text.TextFormat;
 	import starling.textures.Texture;
 	import starling.utils.Align;
+	import starling.utils.Color;
 
 	public class ComboBox extends Sprite
 	{
+		private var _titleField:TextField;
 		private var _selectedBox:TextButton;
 		private var _dropdownButton:ImageButton;
 		private var _items:Vector.<TextButton>;
+		private var _isSelected:Boolean;
 		private var _isDown:Boolean;
 		private var _callback:Function;
 		
@@ -19,14 +24,26 @@ package
 		//private var _scrollDownButton:Button;
 		//private var _scrollBar:Button;
 		
-		public function ComboBox(x:Number, y:Number, width:Number, height:Number, callback:Function)
+		public function ComboBox(x:Number, y:Number, width:Number, height:Number, title:String, callback:Function)
 		{
 			this.x = x;
 			this.y = y;
 			
+			// _titleField
+			var format:TextFormat = new TextFormat();
+			format.color = Color.BLACK;
+			format.bold = true;
+			format.font = "Consolas";
+			format.horizontalAlign = Align.LEFT;
+			format.verticalAlign = Align.CENTER;
+			
+			_titleField = new TextField(width, height, title, format);
+			_titleField.border = false;
+			addChild(_titleField);
+			
 			// _selectedBox
 			_selectedBox =new TextButton(
-				0, 0, width, height, "", Align.LEFT, false);
+				0, _titleField.height, width, height, "", Align.LEFT, false);
 			_selectedBox.touchable = false;
 			addChild(_selectedBox);
 			
@@ -36,11 +53,12 @@ package
 			if (downBtnTex)
 			{		
 				_dropdownButton = new ImageButton(
-					_selectedBox.width - downBtnTex.width * scale, 0, scale, downBtnTex);
+					_selectedBox.width - downBtnTex.width * scale, _titleField.height, scale, downBtnTex);
 				_dropdownButton.addEventListener(TouchEvent.TOUCH, onDropdownButtonClicked);
 				addChild(_dropdownButton);
 			}
 			
+			_isSelected = false;
 			_isDown = false;
 			_callback = callback;
 		}
@@ -82,7 +100,7 @@ package
 			}
 			
 			var item:TextButton =new TextButton(
-				_selectedBox.x, _items.length * _selectedBox.height + _selectedBox.height,
+				_titleField.x, _items.length * _titleField.height + _titleField.height * 2,
 				_selectedBox.width, _selectedBox.height,
 				name, Align.LEFT, false);
 			item.name = name;
@@ -197,9 +215,16 @@ package
 				{
 					if (item.isIn(action.getLocation(this)))
 					{
-						_selectedBox.text = item.text;
-						_callback(_selectedBox.text);
+						var prevItemName:String = null;
+						if (_isSelected)
+						{
+							prevItemName = _selectedBox.text;
+						}
 						
+						_selectedBox.text = item.text;
+						_callback(_selectedBox.text, prevItemName);
+						
+						_isSelected = true;
 						close();
 					}
 				}
