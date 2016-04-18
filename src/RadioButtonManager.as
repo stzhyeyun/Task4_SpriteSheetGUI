@@ -5,6 +5,10 @@ package
 		private var _buttons:Vector.<RadioButton>;
 		private var _selectedButtonId:int;
 		
+		/**
+		 * 복수의 라디오 버튼에게 유니크한 커서를 운용하기 위하여 매니저를 통해 관리합니다. 
+		 * 
+		 */
 		public function RadioButtonManager()
 		{
 		}
@@ -52,6 +56,11 @@ package
 			}
 		}
 		
+		/**
+		 * 커서를 이동합니다. 
+		 * @param selectedButtonId 커서를 이동할 버튼의 ID입니다.
+		 * 
+		 */
 		public function setFocus(selectedButtonId:int):void
 		{
 			if (_buttons && selectedButtonId >= 0 && selectedButtonId < _buttons.length)

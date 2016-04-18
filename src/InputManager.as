@@ -93,6 +93,15 @@ package
 			}
 		}
 		
+		/**
+		 * 로드할 스프라이트 시트의 정보를 등록합니다. 
+		 * @param type ResourceType 중 선택하여 전달합니다.
+		 * @param path 스프라이트 시트가 위치하는 디렉토리입니다.
+		 * @param name 스프라이트 시트의 파일명입니다.
+		 * @param func 로드 완료 후 호출할 콜백 함수입니다. type에 따라 다르게 전개됩니다.
+		 * @param startLoad 로드 시작 여부를 지정합니다. true: 시작
+		 * 
+		 */
 		public function loadRequest(type:String, path:File, name:String, func:Function, startLoad:Boolean):void
 		{
 			var png:File = path.resolvePath(name + ".png");
@@ -143,6 +152,11 @@ package
 			}		
 		}
 		
+		/**
+		 * 스프라이트 시트를 _spriteSheets에서 제거합니다. 
+		 * @param name 제거하고자 하는 스프라이트 시트의 이름입니다.
+		 * 
+		 */
 		public function releaseRequest(name:String):void
 		{
 			if (_spriteSheets[name])
@@ -224,6 +238,11 @@ package
 			}
 		}
 		
+		/**
+		 * XML 정보에 따라 스프라이트 시트를 분할하여 멤버로 저장합니다. 
+		 * @param xml 스프라이트 시트 이미지 파일명과 동일한 이름의 XML 파일입니다.
+		 * 
+		 */
 		private function unpack(xml:XML):void
 		{
 			if (!xml)

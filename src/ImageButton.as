@@ -61,6 +61,7 @@ package
 			
 			if (action)
 			{
+				// 마우스 액션에 따라 버튼 크기 변경
 				if (action.phase == TouchPhase.BEGAN || action.phase == TouchPhase.MOVED)
 				{
 					this.x = _downX;

@@ -144,6 +144,7 @@ package
 			var ended:Touch = event.getTouch(this, TouchPhase.ENDED);
 			var hover:Touch = event.getTouch(this, TouchPhase.HOVER);
 			
+			// 마우스 액션에 따라 _base 색상 변경
 			if (!began && !moved && !hover || ended)
 			{
 				if (!_isIdle)
