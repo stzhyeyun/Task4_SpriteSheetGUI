@@ -380,6 +380,11 @@ package
 		{
 			_viewArea.getChildByName(_selectedSpriteSheet.spriteSheet.name).visible = false;
 			
+			if (_currSpriteIndex >= 0)
+			{
+				_viewArea.getChildByName(_selectedSpriteSheet.sprites[_currSpriteIndex].name).visible = false;	
+			}
+			
 			if (prevItemName)
 			{
 				var object:DisplayObject = _viewArea.getChildByName(prevItemName);

@@ -215,16 +215,9 @@ package
 				{
 					if (item.isIn(action.getLocation(this)))
 					{
-						var prevItemName:String = null;
-						if (_isSelected)
-						{
-							prevItemName = _selectedBox.text;
-						}
-						
+						_callback(item.text, _selectedBox.text);
 						_selectedBox.text = item.text;
-						_callback(_selectedBox.text, prevItemName);
 						
-						_isSelected = true;
 						close();
 					}
 				}
