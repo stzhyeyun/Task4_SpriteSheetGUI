@@ -1,0 +1,29 @@
+<SpriteSheet name="youngsun.png" width="1024" height="1024">
+  <Sprite name="piece18" x="0" y="0" width="289" height="175" rotated="false"/>
+  <Sprite name="piece19" x="0" y="175" width="290" height="174" rotated="false"/>
+  <Sprite name="piece15" x="0" y="349" width="271" height="186" rotated="false"/>
+  <Sprite name="piece4" x="0" y="535" width="275" height="183" rotated="false"/>
+  <Sprite name="piece21" x="0" y="718" width="187" height="269" rotated="false"/>
+  <Sprite name="piece12" x="187" y="718" width="281" height="179" rotated="false"/>
+  <Sprite name="piece17" x="468" y="718" width="194" height="259" rotated="false"/>
+  <Sprite name="piece20" x="662" y="718" width="224" height="224" rotated="false"/>
+  <Sprite name="piece16" x="275" y="349" width="204" height="204" rotated="false"/>
+  <Sprite name="piece5" x="479" y="349" width="202" height="202" rotated="false"/>
+  <Sprite name="piece11" x="275" y="553" width="140" height="140" rotated="false"/>
+  <Sprite name="piece7" x="187" y="897" width="80" height="73" rotated="false"/>
+  <Sprite name="piece9" x="267" y="897" width="80" height="71" rotated="false"/>
+  <Sprite name="piece10" x="347" y="897" width="80" height="71" rotated="false"/>
+  <Sprite name="piece8" x="662" y="942" width="80" height="71" rotated="false"/>
+  <Sprite name="piece6" x="742" y="942" width="65" height="64" rotated="false"/>
+  <Sprite name="piece28" x="187" y="977" width="45" height="45" rotated="false"/>
+  <Sprite name="piece25" x="232" y="977" width="39" height="39" rotated="false"/>
+  <Sprite name="piece26" x="271" y="977" width="39" height="38" rotated="false"/>
+  <Sprite name="piece29" x="0" y="987" width="27" height="27" rotated="false"/>
+  <Sprite name="piece23" x="27" y="987" width="24" height="22" rotated="false"/>
+  <Sprite name="piece31" x="27" y="1009" width="16" height="15" rotated="false"/>
+  <Sprite name="piece30" x="43" y="1009" width="16" height="15" rotated="false"/>
+  <Sprite name="piece33" x="59" y="1009" width="16" height="15" rotated="false"/>
+  <Sprite name="piece32" x="75" y="1009" width="16" height="15" rotated="false"/>
+  <Sprite name="piece27" x="91" y="1009" width="13" height="13" rotated="false"/>
+  <Sprite name="piece24" x="0" y="1014" width="8" height="8" rotated="false"/>
+</SpriteSheet>

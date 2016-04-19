@@ -1,0 +1,4 @@
+<SpriteSheet name="HOS3.png" width="512" height="512">
+  <Sprite name="lili" x="0" y="0" width="320" height="200" rotated="false"/>
+  <Sprite name="arthas" x="0" y="200" width="300" height="200" rotated="false"/>
+</SpriteSheet>
